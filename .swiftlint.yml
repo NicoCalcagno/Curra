@@ -1,0 +1,22 @@
+included:
+  - Curra
+  - CurraWidget
+  - CurraTests
+
+disabled_rules:
+  - line_length # handled by taste; SwiftUI builders get wide
+  - todo
+
+opt_in_rules:
+  - empty_count
+  - sorted_first_last
+  - contains_over_first_not_nil
+
+identifier_name:
+  min_length: 2
+  excluded: [i, x, y, id, dx, dy, hr, km]
+
+type_body_length:
+  warning: 400
+function_body_length:
+  warning: 80

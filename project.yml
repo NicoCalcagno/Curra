@@ -1,0 +1,89 @@
+name: Curra
+options:
+  bundleIdPrefix: com.nicocalcagno
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: true
+    CODE_SIGN_STYLE: Automatic
+    # Set your Apple ID team here (or in Xcode > Signing & Capabilities)
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  Curra:
+    type: application
+    platform: iOS
+    sources:
+      - path: Curra
+    dependencies:
+      - target: CurraWidget
+        embed: true
+    entitlements:
+      path: Curra/Support/Curra.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.background-delivery: true
+        com.apple.security.application-groups:
+          - group.com.nicocalcagno.curra
+    info:
+      path: Curra/Support/Info.plist
+      properties:
+        CFBundleDisplayName: Curra
+        UILaunchScreen: {}
+        NSHealthShareUsageDescription: >-
+          Curra reads your running workouts, routes and heart rate to track your
+          training, goals and history. Data never leaves your device.
+        NSHealthUpdateUsageDescription: >-
+          Curra schedules planned workouts to your Apple Watch Workout app.
+        NSLocationWhenInUseUsageDescription: >-
+          Curra shows your position on route maps.
+        UIBackgroundModes:
+          - fetch
+          - processing
+        CFBundleURLTypes:
+          - CFBundleURLName: com.nicocalcagno.curra.oauth
+            CFBundleURLSchemes:
+              - curra
+        ITSAppUsesNonExemptEncryption: false
+
+  CurraWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: CurraWidget
+    entitlements:
+      path: CurraWidget/Support/CurraWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.nicocalcagno.curra
+    info:
+      path: CurraWidget/Support/Info.plist
+      properties:
+        CFBundleDisplayName: Curra Goals
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+
+  CurraTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: CurraTests
+    dependencies:
+      - target: Curra
+
+schemes:
+  Curra:
+    build:
+      targets:
+        Curra: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - CurraTests
