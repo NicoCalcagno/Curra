@@ -56,6 +56,8 @@ targets:
     platform: iOS
     sources:
       - path: CurraWidget
+      # GoalSnapshot is shared between app and widget through the App Group.
+      - path: Curra/Shared
     entitlements:
       path: CurraWidget/Support/CurraWidget.entitlements
       properties:
