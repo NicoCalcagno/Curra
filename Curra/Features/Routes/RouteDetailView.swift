@@ -4,6 +4,8 @@ import SwiftUI
 
 struct RouteDetailView: View {
     @Environment(\.modelContext) private var modelContext
+    @ObservedObject private var offline = OfflineMapService.shared
+    @State private var offlineError: String?
     let route: Route
 
     var body: some View {
@@ -45,6 +47,8 @@ struct RouteDetailView: View {
                         .buttonStyle(.bordered)
                     }
                 }
+
+                offlineSection
             }
             .padding()
         }
@@ -58,25 +62,74 @@ struct RouteDetailView: View {
             Text(value).font(.subheadline.weight(.semibold))
         }
     }
+
+    // MARK: - Offline
+
+    @ViewBuilder private var offlineSection: some View {
+        let _ = offline.packsVersion // re-evaluate when packs change
+
+        VStack(alignment: .leading, spacing: 8) {
+            if let progress = offline.downloadProgress[route.id] {
+                ProgressView(value: progress) {
+                    Text("Downloading offline map…")
+                        .font(.footnote)
+                }
+            } else if route.isOfflineAvailable && offline.isAvailableOffline(route.id) {
+                HStack {
+                    Label("Available offline", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                        .font(.subheadline)
+                    Spacer()
+                    Button("Remove download", role: .destructive) {
+                        removeOffline()
+                    }
+                    .font(.footnote)
+                }
+            } else {
+                Button {
+                    downloadOffline()
+                } label: {
+                    Label("Download map for offline use", systemImage: "arrow.down.circle")
+                }
+                .buttonStyle(.bordered)
+            }
+
+            if let offlineError {
+                Text(offlineError)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
+    private func downloadOffline() {
+        offlineError = nil
+        Task {
+            do {
+                try await offline.download(route: route)
+                route.isOfflineAvailable = true
+                try? modelContext.save()
+            } catch {
+                offlineError = error.localizedDescription
+            }
+        }
+    }
+
+    private func removeOffline() {
+        Task {
+            await offline.removeDownload(routeID: route.id)
+            route.isOfflineAvailable = false
+            try? modelContext.save()
+        }
+    }
 }
 
-/// MapKit rendering for now; Phase 7 swaps this container for the MapLibre
-/// offline-capable map without touching the rest of the screen.
+/// MapLibre-backed so downloaded routes render with no network (airplane mode).
 struct RouteMapContainer: View {
     let route: Route
     let coordinates: [Coordinate]
 
     var body: some View {
-        Map {
-            if coordinates.count > 1 {
-                MapPolyline(coordinates: coordinates.map(RouteBuilderView.clCoordinate))
-                    .stroke(.orange, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-            }
-            if let first = coordinates.first {
-                Marker("Start", coordinate: RouteBuilderView.clCoordinate(first))
-                    .tint(.green)
-            }
-        }
-        .mapStyle(.standard(elevation: .flat))
+        RouteLibreMapView(coordinates: coordinates)
     }
 }

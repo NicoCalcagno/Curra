@@ -16,6 +16,12 @@ struct SettingsView: View {
                 }
             }
 
+            Section("Maps") {
+                NavigationLink("Offline maps") {
+                    OfflineMapsSettingsView()
+                }
+            }
+
             Section("About") {
                 LabeledContent("App", value: "Curra")
                 LabeledContent(
