@@ -15,8 +15,8 @@ struct RootView: View {
             PlansView()
                 .tabItem { Label("Plan", systemImage: "calendar") }
 
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
+            MapTabView()
+                .tabItem { Label("Map", systemImage: "map") }
         }
     }
 }

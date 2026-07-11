@@ -1,24 +1,23 @@
 import SwiftUI
 
+/// Pushed from the Dashboard's gear button (lives inside its NavigationStack).
 struct SettingsView: View {
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Data sources") {
-                    NavigationLink("Strava") {
-                        StravaConnectView()
-                    }
-                }
-
-                Section("About") {
-                    LabeledContent("App", value: "Curra")
-                    LabeledContent(
-                        "Privacy",
-                        value: "All data stays on this device"
-                    )
+        Form {
+            Section("Data sources") {
+                NavigationLink("Strava") {
+                    StravaConnectView()
                 }
             }
-            .navigationTitle("Settings")
+
+            Section("About") {
+                LabeledContent("App", value: "Curra")
+                LabeledContent(
+                    "Privacy",
+                    value: "All data stays on this device"
+                )
+            }
         }
+        .navigationTitle("Settings")
     }
 }

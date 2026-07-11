@@ -44,10 +44,19 @@ struct DashboardView: View {
             }
             .navigationTitle("Dashboard")
             .toolbar {
-                Button {
-                    isAddingGoal = true
-                } label: {
-                    Image(systemName: "plus")
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "gearshape")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isAddingGoal = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
             .sheet(isPresented: $isAddingGoal) {
