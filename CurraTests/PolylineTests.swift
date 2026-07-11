@@ -51,4 +51,22 @@ final class PolylineTests: XCTestCase {
     func testDecodeEmptyStringReturnsEmpty() {
         XCTAssertTrue(Polyline.decode("").isEmpty)
     }
+
+    /// Hand-computed 3D polyline: lat delta 1, lon delta 1 encode to "AA";
+    /// elevation delta 100 encodes to "gE" and must be skipped.
+    func testDecodeWithElevationSkipsThirdDimension() {
+        let decoded = Polyline.decode("AAgE", includesElevation: true)
+        XCTAssertEqual(decoded.count, 1)
+        XCTAssertEqual(decoded[0].latitude, 0.00001, accuracy: 1e-9)
+        XCTAssertEqual(decoded[0].longitude, 0.00001, accuracy: 1e-9)
+    }
+
+    func testDecodeWithElevationHandlesMultiplePoints() {
+        // Two triplets: (1e-5, 1e-5, +1.00 m) then deltas (1, 1, 0) → "AAgEAA?"
+        // where '?' encodes 0.
+        let decoded = Polyline.decode("AAgEAA?", includesElevation: true)
+        XCTAssertEqual(decoded.count, 2)
+        XCTAssertEqual(decoded[1].latitude, 0.00002, accuracy: 1e-9)
+        XCTAssertEqual(decoded[1].longitude, 0.00002, accuracy: 1e-9)
+    }
 }

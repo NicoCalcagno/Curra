@@ -6,6 +6,7 @@ struct CurraApp: App {
     private let container: ModelContainer
     @State private var syncCoordinator: ActivitySyncCoordinator
     @State private var goalMaintenance: GoalMaintenanceService
+    @State private var planService: TrainingPlanService
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -29,6 +30,9 @@ struct CurraApp: App {
             _goalMaintenance = State(
                 initialValue: GoalMaintenanceService(modelContext: container.mainContext)
             )
+            _planService = State(
+                initialValue: TrainingPlanService(modelContext: container.mainContext)
+            )
         } catch {
             fatalError("Failed to create SwiftData container: \(error)")
         }
@@ -39,9 +43,11 @@ struct CurraApp: App {
             RootView()
                 .environment(syncCoordinator)
                 .environment(goalMaintenance)
+                .environment(planService)
                 .task {
-                    syncCoordinator.onDataChanged = { [goalMaintenance] in
+                    syncCoordinator.onDataChanged = { [goalMaintenance, planService] in
                         goalMaintenance.refresh()
+                        Task { await planService.refresh() }
                     }
                     goalMaintenance.refresh()
                     await syncCoordinator.start()
@@ -51,6 +57,7 @@ struct CurraApp: App {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
                 goalMaintenance.refresh()
+                Task { await planService.refresh() }
             }
         }
     }

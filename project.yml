@@ -5,6 +5,13 @@ options:
     iOS: "17.0"
   createIntermediateGroups: true
 
+# MapLibre Native renders the offline route maps (MapKit has no offline API).
+# Approved dependency — see docs/DETAILED_IMPLEMENTATION_PLAN.md §10.
+packages:
+  MapLibre:
+    url: https://github.com/maplibre/maplibre-gl-native-distribution
+    from: 6.0.0
+
 settings:
   base:
     SWIFT_VERSION: "6.0"
@@ -23,6 +30,7 @@ targets:
     dependencies:
       - target: CurraWidget
         embed: true
+      - package: MapLibre
     entitlements:
       path: Curra/Support/Curra.entitlements
       properties:

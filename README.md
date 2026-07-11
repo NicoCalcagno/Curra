@@ -61,11 +61,18 @@ xcodebuild test -scheme Curra -destination 'platform=iOS Simulator,name=iPhone 1
 | 1 | Data layer, Strava + HealthKit import, dedup | done (device validation pending) |
 | 2 | Custom goals + widget | done (device validation pending) |
 | 3 | Instant workouts → Watch | done (device validation pending) |
-| 4 | Training plans | planned |
-| 5 | Heatmap | planned |
-| 6 | Route builder / suggested routes | planned (provider decision pending) |
-| 7 | Offline maps | planned (provider decision pending) |
+| 4 | Training plans | done (device validation pending) |
+| 5 | Heatmap | done (device validation pending) |
+| 6 | Route builder / suggested routes (OpenRouteService) | done (device validation pending) |
+| 7 | Offline maps (OpenFreeMap + MapLibre) | done (device validation pending) |
+
+### Routing setup (one-time, for the route builder)
+
+Create a free account at <https://openrouteservice.org>, request an API token,
+and paste it in Curra → Settings → Routing.
 
 > This codebase was authored without access to Xcode; APIs follow the documented iOS 17
 > SDK but the first build on a Mac may need small fixes, most likely confined to
-> `Engines/Workouts/WorkoutKitBuilder.swift` and `WorkoutSchedulerService.swift`.
+> `Engines/Workouts/WorkoutKitBuilder.swift`, `WorkoutSchedulerService.swift`,
+> `Services/OfflineMaps/OfflineMapService.swift`, and `RouteLibreMapView.swift`
+> (WorkoutKit and MapLibre surface areas).

@@ -30,7 +30,9 @@ enum Polyline {
         return output
     }
 
-    static func decode(_ string: String) -> [Coordinate] {
+    /// `includesElevation: true` parses OpenRouteService 3D polylines
+    /// (lat, lon, elevation triplets); the elevation channel is skipped.
+    static func decode(_ string: String, includesElevation: Bool = false) -> [Coordinate] {
         var coordinates: [Coordinate] = []
         var index = string.startIndex
         var lat = 0
@@ -39,6 +41,9 @@ enum Polyline {
         while index < string.endIndex {
             guard let deltaLat = decodeValue(string, index: &index) else { break }
             guard let deltaLon = decodeValue(string, index: &index) else { break }
+            if includesElevation {
+                guard decodeValue(string, index: &index) != nil else { break }
+            }
             lat += deltaLat
             lon += deltaLon
             coordinates.append(
