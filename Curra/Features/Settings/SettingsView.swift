@@ -10,6 +10,12 @@ struct SettingsView: View {
                 }
             }
 
+            Section("Routing") {
+                NavigationLink("OpenRouteService") {
+                    RoutingSettingsView()
+                }
+            }
+
             Section("About") {
                 LabeledContent("App", value: "Curra")
                 LabeledContent(

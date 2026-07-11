@@ -36,14 +36,3 @@ struct MapTabView: View {
         }
     }
 }
-
-/// Placeholder until Phase 6 lands the route builder.
-struct RoutesHomeView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "Routes coming soon",
-            systemImage: "point.topleft.down.to.point.bottomright.curvepath",
-            description: Text("Build routes by hand or generate loops of a chosen distance.")
-        )
-    }
-}
