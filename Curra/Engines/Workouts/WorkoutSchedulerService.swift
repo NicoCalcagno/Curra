@@ -27,20 +27,25 @@ final class WorkoutSchedulerService {
         in modelContext: ModelContext
     ) async throws {
         let planned = PlannedWorkout(scheduledDate: date, blueprintData: try blueprint.encoded())
+        modelContext.insert(planned)
+        try await scheduleExisting(planned)
+        try modelContext.save()
+    }
+
+    /// Schedules an already-persisted planned workout (used by the training
+    /// plan rolling sync) and flips its status.
+    func scheduleExisting(_ planned: PlannedWorkout) async throws {
+        let blueprint = try WorkoutBlueprint.decoded(from: planned.blueprintData)
         let workoutPlan = WorkoutPlan(
             .custom(WorkoutKitBuilder.customWorkout(from: blueprint)),
             id: planned.id
         )
-
         let components = Calendar.current.dateComponents(
             [.year, .month, .day, .hour, .minute],
-            from: date
+            from: planned.scheduledDate
         )
         await WorkoutScheduler.shared.schedule(workoutPlan, at: components)
-
         planned.status = .scheduledOnWatch
-        modelContext.insert(planned)
-        try modelContext.save()
     }
 
     /// A `WorkoutPlan` ready for the system preview sheet (start-now flow).

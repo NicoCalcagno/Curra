@@ -12,6 +12,9 @@ struct RootView: View {
             InstantWorkoutView()
                 .tabItem { Label("Workouts", systemImage: "stopwatch") }
 
+            PlansView()
+                .tabItem { Label("Plan", systemImage: "calendar") }
+
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
         }
