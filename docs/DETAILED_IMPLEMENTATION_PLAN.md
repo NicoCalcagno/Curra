@@ -437,10 +437,12 @@ executes with working pace alerts.
 Conventional commits, one atomic commit per task (`feat:`, `fix:`, `test:`, `docs:`,
 `refactor:`).
 
-### 11.4 Open decisions (unchanged from master plan)
-1. Apple Developer Program — before daily use (nothing in code depends on it).
-2. Routing provider — before Phase 6 implementation (recommendation: OpenRouteService).
-3. Tile provider — before Phase 7 implementation (recommendation: Protomaps + MapLibre).
+### 11.4 Open decisions
+1. Apple Developer Program — before daily use (nothing in code depends on it). **Still open.**
+2. Routing provider — **decided with the owner: OpenRouteService** (free tier, user key in Keychain).
+3. Tile provider — **decided with the owner: OpenFreeMap vector style rendered and cached
+   offline by MapLibre Native** (chosen over Protomaps for the battle-tested
+   `MLNOfflineStorage` download path).
 
 ---
 
@@ -448,13 +450,17 @@ Conventional commits, one atomic commit per task (`feat:`, `fix:`, `test:`, `doc
 
 | Phase | Scope | Status |
 |---|---|---|
-| 0 | XcodeGen scaffold, capabilities, SwiftLint, app skeleton | **implemented in this repo** |
-| 1 | Full SwiftData schema, polyline codec, Strava OAuth+import+rate limiter, HealthKit sync, dedup, coordinator, unit tests | **implemented in this repo** |
-| 2 | GoalEngine, dashboard UI, goal editor/detail, history, widget | **implemented in this repo** |
-| 3 | Load calculator, 4-mode generator, WorkoutKit builder/scheduler, workouts UI, unit tests | **implemented in this repo** |
-| 4 | Training plans | next — after Phase 3 device validation |
-| 5 | Heatmap | after Phase 1 data is on device |
-| 6–7 | Routes + offline | after provider decisions |
+| 0 | XcodeGen scaffold, capabilities, SwiftLint, app skeleton | **implemented** |
+| 1 | Full SwiftData schema, polyline codec, Strava OAuth+import+rate limiter, HealthKit sync, dedup, coordinator, unit tests | **implemented** |
+| 2 | GoalEngine, dashboard UI, goal editor/detail, history, widget | **implemented** |
+| 3 | Load calculator, 4-mode generator, WorkoutKit builder/scheduler, workouts UI, unit tests | **implemented** |
+| 4 | Plan templates/engine, adherence + adaptation, rolling Watch sync, Plan tab, unit tests | **implemented** |
+| 5 | Heatmap with year/distance filters (Map tab) | **implemented** |
+| 6 | ORS client (directions + round_trip), manual builder, suggested loops, GPX export, unit tests | **implemented** |
+| 7 | MapLibre + OpenFreeMap offline packs per route, storage management | **implemented** |
+
+All phases require on-device validation (HealthKit/WorkoutKit/widget/offline tiles);
+see the README checklist.
 
 > ⚠️ This repository was authored in a Linux environment without Xcode: the code compiles
 > against documented iOS 17 APIs but has **not** been compiled here. First action on a Mac:
